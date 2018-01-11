@@ -1,0 +1,73 @@
+{
+  "project_info": {
+    "project_number": "921320011640",
+    "firebase_url": "https://admob-app-id-6042697368.firebaseio.com",
+    "project_id": "admob-app-id-6042697368",
+    "storage_bucket": "admob-app-id-6042697368.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:921320011640:android:b512fde53113f315",
+        "android_client_info": {
+          "package_name": "me.waister.qualcomprar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "921320011640-rjistjv2fshvnrk4rkm8alc1brf0p94o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDhLhpg1207hXOeTf78fAC8Qx_v2i4saNg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:921320011640:android:154aa18b129a1d3b",
+        "android_client_info": {
+          "package_name": "me.waister.qualcompensa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "921320011640-rjistjv2fshvnrk4rkm8alc1brf0p94o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDhLhpg1207hXOeTf78fAC8Qx_v2i4saNg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,174 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorLayoutCard"
+    tools:context="me.waister.qualcompensa.MainActivity">
+
+    <ScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/adView">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.CardView
+                android:layout_marginTop="@dimen/card_margin"
+                style="@style/WidgetCardView">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout style="@style/LayoutCard">
+
+                        <TextView
+                            android:text="@string/label_first"
+                            style="@style/TextLabel" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <android.support.design.widget.TextInputLayout
+                                android:hint="@string/text_price"
+                                style="@style/TextInputLayout">
+
+                                <android.support.v7.widget.AppCompatEditText
+                                    android:id="@+id/field_price_first"
+                                    android:inputType="numberDecimal"
+                                    android:imeOptions="actionNext"
+                                    android:maxLength="10"
+                                    android:digits="0123456789,"
+                                    style="@style/AppCompatEditText" />
+                            </android.support.design.widget.TextInputLayout>
+
+                            <android.support.design.widget.TextInputLayout
+                                android:hint="@string/text_size"
+                                style="@style/TextInputLayout">
+
+                                <android.support.v7.widget.AppCompatEditText
+                                    android:id="@+id/field_size_first"
+                                    android:inputType="number"
+                                    android:imeOptions="actionNext"
+                                    android:maxLength="10"
+                                    android:digits="0123456789"
+                                    style="@style/AppCompatEditText" />
+                            </android.support.design.widget.TextInputLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#DDD"/>
+
+                    <LinearLayout style="@style/LayoutCard">
+
+                        <TextView
+                            android:text="@string/label_second"
+                            style="@style/TextLabel" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <android.support.design.widget.TextInputLayout
+                                android:hint="@string/text_price"
+                                style="@style/TextInputLayout">
+
+                                <android.support.v7.widget.AppCompatEditText
+                                    android:id="@+id/field_price_second"
+                                    android:inputType="numberDecimal"
+                                    android:imeOptions="actionNext"
+                                    android:maxLength="10"
+                                    android:digits="0123456789,"
+                                    style="@style/AppCompatEditText" />
+                            </android.support.design.widget.TextInputLayout>
+
+                            <android.support.design.widget.TextInputLayout
+                                android:hint="@string/text_size"
+                                style="@style/TextInputLayout">
+
+                                <android.support.v7.widget.AppCompatEditText
+                                    android:id="@+id/field_size_second"
+                                    android:inputType="number"
+                                    android:imeOptions="actionSend"
+                                    android:maxLength="10"
+                                    android:digits="0123456789"
+                                    style="@style/AppCompatEditText" />
+                            </android.support.design.widget.TextInputLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:paddingBottom="16dp"
+                        android:orientation="vertical">
+
+                        <android.support.v7.widget.AppCompatButton
+                            android:id="@+id/button_submit"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="16dp"
+                            android:paddingBottom="16dp"
+                            android:textColor="@android:color/white"
+                            android:text="@string/button_submit"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/card_result"
+                android:visibility="gone"
+                style="@style/WidgetCardView">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/text_result_first"
+                        android:text="@string/result_first"
+                        style="@style/TextResult" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/text_result_second"
+                        android:text="@string/result_second"
+                        style="@style/TextResult" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/text_result_percentage"
+                        android:text="@string/result_percentage"
+                        style="@style/TextResult" />
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+        </LinearLayout>
+    </ScrollView>
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:layout_marginTop="5dp"
+        ads:adSize="SMART_BANNER"
+        ads:adUnitId="ca-app-pub-6521704558504566/7519430564" />
+</RelativeLayout>
