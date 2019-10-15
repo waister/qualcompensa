@@ -9,25 +9,25 @@
     <string name="erase_fields">Limpar os campos</string>
     <string name="share_app">Compartilhar aplicativo</string>
     <string name="share_message">Compare o valor de dois produtos facilmente com o aplicativo Qual Compensa</string>
-
     <string name="first">primeiro</string>
     <string name="second">segundo</string>
-
     <string name="error_empty_price">Ops… Digite o preço do produto antes calcular!</string>
     <string name="error_empty_size">Ops… Digite a quantidade do produto antes de calcular!</string>
-
     <string name="result_generic"><![CDATA[Preço do produto: R$ <b>%1$s</b> <small>(por grama/ml)</small>]]></string>
     <string name="result_first"><![CDATA[Preço do <b>primeiro</b>: R$ <b>%1$s</b> <small>(por grama/ml)</small>]]></string>
     <string name="result_second"><![CDATA[Preço do <b>segundo</b>: R$ <b>%1$s</b> <small>(por grama/ml)</small>]]></string>
     <string name="result_percentage"><![CDATA[O <b>%1$s</b> produto é <b>%2$s</b> mais barato.]]></string>
     <string name="result_equals">O preço dos dois são equivalentes.</string>
-
     <string name="alert_title">Entendendo o aplicativo</string>
     <string name="alert_message">Imaginando que você está fazendo compras e vê o mesmo produto com duas embalagens diferentes, um menor e o outro maior, como saber qual saí mais em conta?\nVocê abre o aplicativo e coloca seus respectivos preços, então o app informará qual compensa mais, e qual a porcentagem dessa diferença entre eles.</string>
     <string name="alert_button">OK, vamos lá!</string>
-
     <string name="confirmation">Confirmação</string>
     <string name="confirmation_message">Tem certeza que deseja limpar os campos?</string>
     <string name="confirm">Confirmar</string>
     <string name="cancel">Cancelar</string>
+    <string name="error_on_update">Não atualizado</string>
+    <string name="error_on_update_message">Você não completou o processo de atualização do app.</string>
+    <string name="try_again">Tentar novamente</string>
+    <string name="exit_app">Sair do APP</string>
+    <string name="channel_updates">Atualizações do App</string>
 </resources>

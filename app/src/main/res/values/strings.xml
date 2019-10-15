@@ -9,25 +9,25 @@
     <string name="erase_fields">Clear fields</string>
     <string name="share_app">Share App</string>
     <string name="share_message">Compare the value of two products easily with the application What Compensates</string>
-
     <string name="first">first</string>
     <string name="second">second</string>
-
     <string name="error_empty_price">Oops… Enter the price of the product before calculating!</string>
     <string name="error_empty_size">Oops… Enter the quantity of the product before calculating!</string>
-
     <string name="result_generic"><![CDATA[Price of product: $<b>%1$s</b> <small>(per gram/ml)</small>]]></string>
     <string name="result_first"><![CDATA[Price of the first: $<b>%1$s</b> <small>(per gram/ml)</small>]]></string>
     <string name="result_second"><![CDATA[Price of the second: $<b>%1$s</b> <small>(per gram/ml)</small>]]></string>
     <string name="result_percentage"><![CDATA[The <b>%1$s</b> product is <b>%2$s</b> cheaper.]]></string>
     <string name="result_equals">The price of the two are equivalent.</string>
-
     <string name="alert_title">Understanding application</string>
     <string name="alert_message">Imagining that you\'re out shopping and see the same product in two different packages, one smaller and the other larger, how to know which left more account?\nYou open the application and puts their prices, then the app will tell you what makes up more, and what percentage of the difference between them.</string>
     <string name="alert_button">OK, let\'s go!</string>
-
     <string name="confirmation">Confirmation</string>
     <string name="confirmation_message">Are you sure you want to clear the fields?</string>
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
+    <string name="error_on_update">Not updated</string>
+    <string name="error_on_update_message">You have not completed the app update process.</string>
+    <string name="try_again">Try again</string>
+    <string name="exit_app">Leave the APP</string>
+    <string name="channel_updates">App Updates</string>
 </resources>

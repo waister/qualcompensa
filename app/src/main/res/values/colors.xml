@@ -5,6 +5,6 @@
     <color name="colorAccent">#F79423</color>
 
     <color name="colorAccentDark">#F48509</color>
-
+    <color name="white">@android:color/white</color>
     <color name="colorLayoutCard">#E7E7E7</color>
 </resources>
