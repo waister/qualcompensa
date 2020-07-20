@@ -8,18 +8,18 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:232578978015:android:0d0b0b194e27aafc0b196a",
+        "mobilesdk_app_id": "1:232578978015:android:ddd14fcdfe5acb520b196a",
         "android_client_info": {
           "package_name": "me.waister.qualcompensa"
         }
       },
       "oauth_client": [
         {
-          "client_id": "232578978015-vhog74efusnvc97beav7pvm5kjs943gk.apps.googleusercontent.com",
+          "client_id": "232578978015-9lts6e878isca8kr5dva4bk9ass89vku.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "me.waister.qualcompensa",
-            "certificate_hash": "6b36b317e3803955f7acd53c59c387dd1fdec63d"
+            "certificate_hash": "38953dfde90aa393f31819ed8e6437e4477f7f74"
           }
         },
         {

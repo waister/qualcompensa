@@ -1,5 +1,6 @@
 package me.waister.qualcompensa.activity
 
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.text.Editable
@@ -17,24 +18,20 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.github.kittinunf.fuel.httpGet
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.InterstitialAd
-import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.*
 import com.orhanobut.hawk.Hawk
 import kotlinx.android.synthetic.main.activity_main.*
 import me.waister.qualcompensa.BuildConfig
 import me.waister.qualcompensa.R
 import me.waister.qualcompensa.utils.*
 import org.jetbrains.anko.alert
+import org.jetbrains.anko.displayMetrics
 import org.jetbrains.anko.intentFor
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
 import java.text.NumberFormat
-import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var mInterstitialAd: InterstitialAd
+    private var interstitialAd: InterstitialAd? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,12 +53,13 @@ class MainActivity : AppCompatActivity() {
         field_size_second.addTextChangedListener(textChangedListener())
 
         button_submit.setOnClickListener {
-            actionSubmit()
+            hideKeyboard()
+            calculate(true)
         }
 
         field_size_second.setOnEditorActionListener(TextView.OnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEND) {
-                actionSubmit()
+                button_submit.performClick()
                 return@OnEditorActionListener true
             }
 
@@ -73,17 +71,46 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initAdMob() {
-        val adBuilder = AdRequest.Builder()
-        adBuilder.addTestDevice("738582C779CD9CA43CC0361682874D45")
-        adView.loadAd(adBuilder.build())
+        MobileAds.initialize(this) {}
 
-        MobileAds.initialize(this)
-        mInterstitialAd = InterstitialAd(this)
-        mInterstitialAd.adUnitId = if (BuildConfig.DEBUG)
-            "ca-app-pub-3940256099942544/1033173712"
-        else
-            "ca-app-pub-6521704558504566/2457847036"
-        mInterstitialAd.loadAd(AdRequest.Builder().build())
+        val deviceId = listOf(AdRequest.DEVICE_ID_EMULATOR)
+        val configuration = RequestConfiguration.Builder().setTestDeviceIds(deviceId).build()
+        MobileAds.setRequestConfiguration(configuration)
+
+        loadAdBanner()
+        loadInterstitialAd()
+    }
+
+    private fun loadAdBanner() {
+        val adView = AdView(this)
+        ll_banner.addView(adView)
+
+        val adUnitId = "ca-app-pub-6521704558504566/8188995605"
+        val testAdUnitId = "ca-app-pub-3940256099942544/6300978111"
+
+        adView.adUnitId = if (BuildConfig.DEBUG) testAdUnitId else adUnitId
+        adView.adSize = getAdSize()
+        adView.loadAd(AdRequest.Builder().build())
+    }
+
+    private fun Activity.getAdSize(): AdSize {
+        val density = displayMetrics.density
+
+        var adWidthPixels = ll_banner.width.toFloat()
+        if (adWidthPixels == 0f)
+            adWidthPixels = displayMetrics.widthPixels.toFloat()
+
+        val adWidth = (adWidthPixels / density).toInt()
+        return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, adWidth)
+    }
+
+    private fun loadInterstitialAd() {
+        val adUnitId = "ca-app-pub-6521704558504566/4676577263"
+        val testAdUnitId = "ca-app-pub-3940256099942544/1033173712"
+
+        interstitialAd = InterstitialAd(this)
+        interstitialAd!!.adUnitId = if (BuildConfig.DEBUG) testAdUnitId else adUnitId
+        interstitialAd!!.loadAd(AdRequest.Builder().build())
     }
 
     private fun alertFirstAccess() {
@@ -103,15 +130,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun actionSubmit() {
-        if (mInterstitialAd.isLoaded)
-            mInterstitialAd.show()
-
-        hideKeyboard()
-
-        calculate(true)
-    }
-
     private fun calculate(showToast: Boolean) {
         val priceFirst = getPrice(field_price_first)
         val sizeFirst = getNumber(field_size_first)
@@ -119,16 +137,19 @@ class MainActivity : AppCompatActivity() {
         val sizeSecond = getNumber(field_size_second)
 
         if (priceFirst > 0 && sizeFirst > 0) {
+            if (showToast)
+                interstitialAd?.show()
+
             val realFirst = priceFirst / sizeFirst
 
-            val resultFirst = getString(R.string.result_first, formatPrice(realFirst))
+            val resultFirst = getString(R.string.result_first, realFirst.formatPrice())
 
             text_result_first.text = fromHtml(resultFirst)
 
             if (priceSecond > 0 && sizeSecond > 0) {
                 val realSecond = priceSecond / sizeSecond
 
-                val resultSecond = getString(R.string.result_second, formatPrice(realSecond))
+                val resultSecond = getString(R.string.result_second, realSecond.formatPrice())
                 text_result_second.text = fromHtml(resultSecond)
 
                 val firstBiggest = realFirst > realSecond
@@ -189,13 +210,7 @@ class MainActivity : AppCompatActivity() {
         return field?.text?.toString() ?: ""
     }
 
-    private fun formatPrice(value: Double): String {
-        val locale = DecimalFormatSymbols(Locale("pt", "BR"))
-        val formatter = DecimalFormat("##,###,###,##0.00", locale)
-        formatter.minimumFractionDigits = 3
-        formatter.isParseBigDecimal = true
-        return formatter.format(value)
-    }
+    private fun Double.formatPrice(): String = NumberFormat.getCurrencyInstance().format(this)
 
     private fun formatPercent(value: Double): String {
         val percentFormat = NumberFormat.getPercentInstance()
@@ -242,7 +257,6 @@ class MainActivity : AppCompatActivity() {
                     Hawk.put(PREF_FCM_TOKEN_SENT, apiObj.getBooleanVal(API_SUCCESS))
                 }
             }
-
         }
     }
 
@@ -296,8 +310,7 @@ class MainActivity : AppCompatActivity() {
     override fun onBackPressed() {
         super.onBackPressed()
 
-        if (mInterstitialAd.isLoaded)
-            mInterstitialAd.show()
+        interstitialAd?.show()
     }
 
 }

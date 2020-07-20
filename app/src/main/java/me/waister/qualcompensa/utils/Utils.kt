@@ -2,12 +2,14 @@ package me.waister.qualcompensa.utils
 
 import android.content.Context
 import android.graphics.*
+import android.util.Log
 import android.webkit.URLUtil
 import com.github.kittinunf.fuel.core.FuelError
 import com.github.kittinunf.fuel.core.Request
 import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.result.Result
 import me.waister.qualcompensa.BuildConfig
+import me.waister.qualcompensa.services.MyFirebaseMessagingService
 
 fun Context.storeAppLink(): String = "https://play.google.com/store/apps/details?id=$packageName"
 
@@ -97,4 +99,9 @@ fun printFuelLog(request: Request, response: Response, result: Result<String, Fu
         println(result)
         println("\n--------------- RESULT_RESULT_END - ${request.path}\n")
     }
+}
+
+fun debugLog(message: String) {
+    if (BuildConfig.DEBUG)
+        Log.i(MyFirebaseMessagingService.TAG, message)
 }

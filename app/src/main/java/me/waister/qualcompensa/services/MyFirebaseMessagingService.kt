@@ -11,7 +11,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.github.kittinunf.fuel.httpGet
@@ -43,7 +42,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     override fun onNewToken(token: String) {
         super.onNewToken(token)
 
-        Log.i(TAG, "New token: $token")
+        debugLog("New token: $token")
 
         Hawk.put(PREF_FCM_TOKEN, token)
         Hawk.put(PREF_FCM_TOKEN_SENT, false)
@@ -65,11 +64,11 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
 
-        Log.i(TAG, "Firebase Cloud Messaging new message received!")
+        debugLog("Firebase Cloud Messaging new message received!")
 
         val data = remoteMessage.data
 
-        Log.i(TAG, "Push message data: $data")
+        debugLog("Push message data: $data")
 
         var type = ""
         var title = ""
@@ -93,13 +92,13 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             }
         }
 
-        Log.i(TAG, "Push type: $type")
-        Log.i(TAG, "Push title: $title")
-        Log.i(TAG, "Push body: $body")
-        Log.i(TAG, "Push link: $link")
-        Log.i(TAG, "Push image: $image")
-        Log.i(TAG, "Push version: $version")
-        Log.i(TAG, "Push itemId: $itemId")
+        debugLog("Push type: $type")
+        debugLog("Push title: $title")
+        debugLog("Push body: $body")
+        debugLog("Push link: $link")
+        debugLog("Push image: $image")
+        debugLog("Push version: $version")
+        debugLog("Push itemId: $itemId")
 
         if (title.isEmpty())
             return
@@ -153,7 +152,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         if (image.isNotEmpty()) {
             val thumbUrl = getThumbUrl(image, 100, 100)
 
-            Log.i(TAG, "Push thumb url: $thumbUrl")
+            debugLog("Push thumb url: $thumbUrl")
 
             try {
                 val url = URL(thumbUrl)
@@ -179,7 +178,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         manager.notify(NOTIFICATION_DEFAULT_ID, builder.build())
 
-        Log.i(TAG, "Push notification displayed")
+        debugLog("Push notification displayed")
 
         val pattern = longArrayOf(0, 100, 0, 100)
         val vibrator = applicationContext.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator

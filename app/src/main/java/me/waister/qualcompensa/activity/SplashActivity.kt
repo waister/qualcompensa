@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
+import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.play.core.appupdate.AppUpdateManager
@@ -11,6 +12,7 @@ import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.orhanobut.hawk.Hawk
+import kotlinx.android.synthetic.main.activity_splash.*
 import me.waister.qualcompensa.R
 import me.waister.qualcompensa.application.CustomApplication
 import me.waister.qualcompensa.utils.PREF_DEVICE_ID
@@ -55,6 +57,8 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun checkAppVersion() {
+        ll_loading.visibility = View.VISIBLE
+
         appUpdateManager = AppUpdateManagerFactory.create(this)
 
         val appUpdateInfoTask = appUpdateManager?.appUpdateInfo
@@ -89,6 +93,7 @@ class SplashActivity : AppCompatActivity() {
             if (resultCode == RESULT_OK) {
                 initApp()
             } else {
+                ll_loading.visibility = View.GONE
 
                 val dialog = AlertDialog.Builder(this)
                 dialog.setCancelable(false)

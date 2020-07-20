@@ -23,7 +23,7 @@
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-6521704558504566~6042697368" />
+            android:value="ca-app-pub-6521704558504566~9693648968" />
 
         <activity
             android:name="me.waister.qualcompensa.activity.SplashActivity"

@@ -6,10 +6,10 @@ import android.widget.EditText
 
 import java.text.NumberFormat
 
-class MaskMoney(private val mEditText: EditText) : TextWatcher {
+class MaskMoney(private val editText: EditText) : TextWatcher {
     private var isUpdating = false
 
-    private val mNumberFormat = NumberFormat.getCurrencyInstance()
+    private val numberFormat = NumberFormat.getCurrencyInstance()
 
     override fun onTextChanged(charSequence: CharSequence, start: Int, before: Int, after: Int) {
         if (isUpdating) {
@@ -24,11 +24,10 @@ class MaskMoney(private val mEditText: EditText) : TextWatcher {
         value = value.replace("\\D+".toRegex(), "")
 
         try {
-            value = mNumberFormat.format(java.lang.Double.parseDouble(value) / 100)
-            value = value.replace("$", "$ ")
+            value = numberFormat.format(java.lang.Double.parseDouble(value) / 100)
 
-            mEditText.setText(value)
-            mEditText.setSelection(value.length)
+            editText.setText(value)
+            editText.setSelection(value.length)
         } catch (ignored: NumberFormatException) {
         }
 
