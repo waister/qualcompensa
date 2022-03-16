@@ -3,7 +3,7 @@ package me.waister.qualcompensa.utils
 import org.json.JSONException
 import org.json.JSONObject
 
-const val APP_HOST = "https://duduapps.com/"
+const val APP_HOST = "https://maggapps.com/"
 
 const val API_ROUTE_IDENTIFY = "/identify"
 

@@ -18,6 +18,7 @@ import me.waister.qualcompensa.application.CustomApplication
 import me.waister.qualcompensa.utils.PREF_DEVICE_ID
 import org.jetbrains.anko.intentFor
 
+@SuppressLint("CustomSplashScreen")
 class SplashActivity : AppCompatActivity() {
 
     companion object {

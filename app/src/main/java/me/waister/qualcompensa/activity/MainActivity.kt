@@ -1,6 +1,5 @@
 package me.waister.qualcompensa.activity
 
-import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.text.Editable
@@ -18,14 +17,17 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.github.kittinunf.fuel.httpGet
-import com.google.android.gms.ads.*
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.RequestConfiguration
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.orhanobut.hawk.Hawk
 import kotlinx.android.synthetic.main.activity_main.*
-import me.waister.qualcompensa.BuildConfig
 import me.waister.qualcompensa.R
 import me.waister.qualcompensa.utils.*
 import org.jetbrains.anko.alert
-import org.jetbrains.anko.displayMetrics
 import org.jetbrains.anko.intentFor
 import java.text.NumberFormat
 
@@ -77,40 +79,28 @@ class MainActivity : AppCompatActivity() {
         val configuration = RequestConfiguration.Builder().setTestDeviceIds(deviceId).build()
         MobileAds.setRequestConfiguration(configuration)
 
-        loadAdBanner()
+        loadAdBanner(ll_banner, "ca-app-pub-6521704558504566/8188995605")
+
         loadInterstitialAd()
     }
 
-    private fun loadAdBanner() {
-        val adView = AdView(this)
-        ll_banner.addView(adView)
-
-        val adUnitId = "ca-app-pub-6521704558504566/8188995605"
-        val testAdUnitId = "ca-app-pub-3940256099942544/6300978111"
-
-        adView.adUnitId = if (BuildConfig.DEBUG) testAdUnitId else adUnitId
-        adView.adSize = getAdSize()
-        adView.loadAd(AdRequest.Builder().build())
-    }
-
-    private fun Activity.getAdSize(): AdSize {
-        val density = displayMetrics.density
-
-        var adWidthPixels = ll_banner.width.toFloat()
-        if (adWidthPixels == 0f)
-            adWidthPixels = displayMetrics.widthPixels.toFloat()
-
-        val adWidth = (adWidthPixels / density).toInt()
-        return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, adWidth)
-    }
-
     private fun loadInterstitialAd() {
+        val logTag = "InterstitialAd"
         val adUnitId = "ca-app-pub-6521704558504566/4676577263"
-        val testAdUnitId = "ca-app-pub-3940256099942544/1033173712"
 
-        interstitialAd = InterstitialAd(this)
-        interstitialAd!!.adUnitId = if (BuildConfig.DEBUG) testAdUnitId else adUnitId
-        interstitialAd!!.loadAd(AdRequest.Builder().build())
+        val adRequest = AdRequest.Builder().build()
+
+        InterstitialAd.load(this, adUnitId, adRequest, object : InterstitialAdLoadCallback() {
+            override fun onAdFailedToLoad(adError: LoadAdError) {
+                appLog(logTag, "onAdFailedToLoad(): ${adError.message}")
+                interstitialAd = null
+            }
+
+            override fun onAdLoaded(ad: InterstitialAd) {
+                appLog(logTag, "Ad was loaded")
+                interstitialAd = ad
+            }
+        })
     }
 
     private fun alertFirstAccess() {
@@ -138,7 +128,7 @@ class MainActivity : AppCompatActivity() {
 
         if (priceFirst > 0 && sizeFirst > 0) {
             if (showToast)
-                interstitialAd?.show()
+                interstitialAd?.show(this)
 
             val realFirst = priceFirst / sizeFirst
 
@@ -162,7 +152,8 @@ class MainActivity : AppCompatActivity() {
                     val percentage = (larger - less) / larger
                     val formatted = formatPercent(percentage)
 
-                    val word = if (firstBiggest) getString(R.string.second) else getString(R.string.first)
+                    val word =
+                        if (firstBiggest) getString(R.string.second) else getString(R.string.first)
                     val result = getString(R.string.result_percentage, word, formatted)
                     text_result_percentage.text = fromHtml(result)
                 }
@@ -232,7 +223,10 @@ class MainActivity : AppCompatActivity() {
         val inputManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
         if (view != null)
-            inputManager.hideSoftInputFromWindow(view.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+            inputManager.hideSoftInputFromWindow(
+                view.windowToken,
+                InputMethodManager.HIDE_NOT_ALWAYS
+            )
     }
 
     private fun scrollBottom() {
@@ -305,12 +299,6 @@ class MainActivity : AppCompatActivity() {
             negativeButton(R.string.cancel) {}
         }.show()
         return true
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-
-        interstitialAd?.show()
     }
 
 }

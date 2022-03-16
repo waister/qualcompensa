@@ -1,15 +1,19 @@
 package me.waister.qualcompensa.utils
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.*
 import android.util.Log
 import android.webkit.URLUtil
+import android.widget.LinearLayout
 import com.github.kittinunf.fuel.core.FuelError
 import com.github.kittinunf.fuel.core.Request
 import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.result.Result
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
 import me.waister.qualcompensa.BuildConfig
-import me.waister.qualcompensa.services.MyFirebaseMessagingService
 
 fun Context.storeAppLink(): String = "https://play.google.com/store/apps/details?id=$packageName"
 
@@ -26,7 +30,12 @@ fun String?.isValidUrl(): Boolean {
     return this != null && this.isNotEmpty() && URLUtil.isValidUrl(this)
 }
 
-fun Context?.getThumbUrl(image: String?, width: Int = 220, height: Int = 0, quality: Int = 85): String {
+fun Context?.getThumbUrl(
+    image: String?,
+    width: Int = 220,
+    height: Int = 0,
+    quality: Int = 85
+): String {
     if (this != null && image != null && !image.contains("http") && image.contains("/uploads/")) {
         return APP_HOST + "thumb?src=$image&w=$width&h=$height&q=$quality"
     }
@@ -68,13 +77,13 @@ fun Bitmap?.getCircleCroppedBitmap(): Bitmap? {
             paint.color = color
             if (bitmap.width < bitmap.height) {
                 canvas.drawCircle(
-                        (bitmap.width / 2).toFloat(), (bitmap.height / 2).toFloat(),
-                        (bitmap.width / 2).toFloat(), paint
+                    (bitmap.width / 2).toFloat(), (bitmap.height / 2).toFloat(),
+                    (bitmap.width / 2).toFloat(), paint
                 )
             } else {
                 canvas.drawCircle(
-                        (bitmap.width / 2).toFloat(), (bitmap.height / 2).toFloat(),
-                        (bitmap.height / 2).toFloat(), paint
+                    (bitmap.width / 2).toFloat(), (bitmap.height / 2).toFloat(),
+                    (bitmap.height / 2).toFloat(), paint
                 )
             }
             paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
@@ -89,19 +98,46 @@ fun Bitmap?.getCircleCroppedBitmap(): Bitmap? {
 
 fun printFuelLog(request: Request, response: Response, result: Result<String, FuelError>) {
     if (BuildConfig.DEBUG) {
-        println("\n--------------- REQUEST_REQUEST_START - ${request.path}\n")
+        println("\n--------------- REQUEST_REQUEST_START - ${request.url}\n")
         println(request)
-        println("\n--------------- REQUEST_REQUEST_END - ${request.path}\n")
-        println("\n--------------- RESPONSE_RESPONSE_START - ${request.path}\n")
+        println("\n--------------- REQUEST_REQUEST_END - ${request.url}\n")
+        println("\n--------------- RESPONSE_RESPONSE_START - ${request.url}\n")
         println(response)
-        println("\n--------------- RESPONSE_RESPONSE_END - ${request.path}\n")
-        println("\n--------------- RESULT_RESULT_START - ${request.path}\n")
+        println("\n--------------- RESPONSE_RESPONSE_END - ${request.url}\n")
+        println("\n--------------- RESULT_RESULT_START - ${request.url}\n")
         println(result)
-        println("\n--------------- RESULT_RESULT_END - ${request.path}\n")
+        println("\n--------------- RESULT_RESULT_END - ${request.url}\n")
     }
 }
 
-fun debugLog(message: String) {
+fun Activity?.loadAdBanner(adViewContainer: LinearLayout?, adUnitId: String, adSize: AdSize? = null) {
+    if (this == null || adViewContainer == null) return
+
+    val adView = AdView(this)
+    adViewContainer.addView(adView)
+
+    adView.adUnitId = adUnitId
+
+    adView.adSize = adSize ?: getAdSize(adViewContainer)
+
+    adView.loadAd(AdRequest.Builder().build())
+}
+
+fun Activity.getAdSize(adViewContainer: LinearLayout): AdSize {
+    var adWidthPixels = adViewContainer.width.toFloat()
+    if (adWidthPixels == 0f)
+        adWidthPixels = displayWidth().toFloat()
+
+    val density = resources.displayMetrics.density
+    val adWidth = (adWidthPixels / density).toInt()
+    return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, adWidth)
+}
+
+fun Activity?.displayWidth(): Int {
+    return if (this != null) resources.displayMetrics.widthPixels else 0
+}
+
+fun appLog(tag: String, msg: String) {
     if (BuildConfig.DEBUG)
-        Log.i(MyFirebaseMessagingService.TAG, message)
+        Log.i("MAGGAPPS_LOG", "➡➡➡ $tag: $msg")
 }

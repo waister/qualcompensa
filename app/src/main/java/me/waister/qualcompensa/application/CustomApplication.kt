@@ -2,6 +2,7 @@ package me.waister.qualcompensa.application
 
 import android.app.Application
 import com.github.kittinunf.fuel.core.FuelManager
+import com.google.android.gms.ads.MobileAds
 import com.orhanobut.hawk.Hawk
 import me.waister.qualcompensa.BuildConfig
 import me.waister.qualcompensa.utils.*
@@ -12,6 +13,10 @@ class CustomApplication : Application() {
         super.onCreate()
 
         Hawk.init(this).build()
+
+        MobileAds.initialize(this) {}
+
+        AppOpenManager(this)
 
         FuelManager.instance.basePath = "${APP_HOST}api/qualcompensa"
 
@@ -24,7 +29,7 @@ class CustomApplication : Application() {
                 API_VERSION to BuildConfig.VERSION_CODE,
                 API_PLATFORM to API_ANDROID,
                 API_DEBUG to (if (BuildConfig.DEBUG) "1" else "0"),
-                API_V to 5
+                API_V to 8
         )
     }
 

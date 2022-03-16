@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/AndroidStudioProjects-QualCompensa.iml" filepath="$PROJECT_DIR$/.idea/modules/AndroidStudioProjects-QualCompensa.iml" group="QualCompensa" />
-      <module fileurl="file://$PROJECT_DIR$/QualCompensa.iml" filepath="$PROJECT_DIR$/QualCompensa.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/QualCompensa-app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/QualCompensa-app.iml" group="QualCompensa/app" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/QualCompensa.iml" filepath="$PROJECT_DIR$/.idea/modules/QualCompensa.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/QualCompensa.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/QualCompensa.app.iml" />
     </modules>
   </component>
 </project>
