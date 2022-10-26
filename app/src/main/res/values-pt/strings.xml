@@ -28,6 +28,6 @@
     <string name="error_on_update">Não atualizado</string>
     <string name="error_on_update_message">Você não completou o processo de atualização do app.</string>
     <string name="try_again">Tentar novamente</string>
-    <string name="exit_app">Sair do APP</string>
+    <string name="update_later">Atualizar depois</string>
     <string name="channel_updates">Atualizações do App</string>
 </resources>
