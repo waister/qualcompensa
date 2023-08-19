@@ -2,7 +2,12 @@ package me.waister.qualcompensa.utils
 
 import android.app.Activity
 import android.content.Context
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffXfermode
+import android.graphics.Rect
 import android.util.Log
 import android.webkit.URLUtil
 import android.widget.LinearLayout
@@ -27,7 +32,7 @@ fun String?.stringToInt(): Int {
 }
 
 fun String?.isValidUrl(): Boolean {
-    return this != null && this.isNotEmpty() && URLUtil.isValidUrl(this)
+    return !this.isNullOrEmpty() && URLUtil.isValidUrl(this)
 }
 
 fun Context?.getThumbUrl(
@@ -118,7 +123,7 @@ fun Activity?.loadAdBanner(adViewContainer: LinearLayout?, adUnitId: String, adS
 
     adView.adUnitId = adUnitId
 
-    adView.adSize = adSize ?: getAdSize(adViewContainer)
+    adView.setAdSize(adSize ?: getAdSize(adViewContainer))
 
     adView.loadAd(AdRequest.Builder().build())
 }
