@@ -7,10 +7,10 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context=".activity.SplashActivity">
+    tools:context=".activity.StartActivity">
 
     <LinearLayout
-        android:id="@+id/ll_loading"
+        android:id="@+id/loading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
@@ -20,7 +20,6 @@
         tools:ignore="UselessParent">
 
         <ProgressBar
-            android:id="@+id/pb_loading"
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:indeterminateTint="@color/white"

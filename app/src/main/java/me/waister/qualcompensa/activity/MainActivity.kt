@@ -1,5 +1,6 @@
 package me.waister.qualcompensa.activity
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.text.Editable
@@ -24,44 +25,69 @@ import com.google.android.gms.ads.RequestConfiguration
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.orhanobut.hawk.Hawk
-import kotlinx.android.synthetic.main.activity_main.*
 import me.waister.qualcompensa.R
-import me.waister.qualcompensa.utils.*
+import me.waister.qualcompensa.databinding.ActivityMainBinding
+import me.waister.qualcompensa.utils.API_ROUTE_IDENTIFY
+import me.waister.qualcompensa.utils.API_SUCCESS
+import me.waister.qualcompensa.utils.API_TOKEN
+import me.waister.qualcompensa.utils.MaskMoney
+import me.waister.qualcompensa.utils.PREF_FCM_TOKEN
+import me.waister.qualcompensa.utils.PREF_FCM_TOKEN_SENT
+import me.waister.qualcompensa.utils.PREF_FIRST_ACCESS
+import me.waister.qualcompensa.utils.PREF_PRICE_FIRST
+import me.waister.qualcompensa.utils.PREF_PRICE_SECOND
+import me.waister.qualcompensa.utils.PREF_SIZE_FIRST
+import me.waister.qualcompensa.utils.PREF_SIZE_SECOND
+import me.waister.qualcompensa.utils.appLog
+import me.waister.qualcompensa.utils.getBooleanVal
+import me.waister.qualcompensa.utils.getValidJSONObject
+import me.waister.qualcompensa.utils.isDebug
+import me.waister.qualcompensa.utils.loadAdBanner
+import me.waister.qualcompensa.utils.printFuelLog
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.intentFor
 import java.text.NumberFormat
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityMainBinding
+
     private var interstitialAd: InterstitialAd? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         val actionBar = supportActionBar
 
         if (actionBar != null) {
             actionBar.elevation = 8f
         }
 
+        setupViews()
+    }
+
+    private fun setupViews() = with(binding) {
         initAdMob()
 
-        field_price_first.addTextChangedListener(MaskMoney(field_price_first))
-        field_price_second.addTextChangedListener(MaskMoney(field_price_second))
+        fieldPriceFirst.addTextChangedListener(MaskMoney(fieldPriceFirst))
+        fieldPriceSecond.addTextChangedListener(MaskMoney(fieldPriceSecond))
 
-        field_price_first.addTextChangedListener(textChangedListener())
-        field_size_first.addTextChangedListener(textChangedListener())
-        field_price_second.addTextChangedListener(textChangedListener())
-        field_size_second.addTextChangedListener(textChangedListener())
+        fieldPriceFirst.addTextChangedListener(textChangedListener())
+        fieldSizeFirst.addTextChangedListener(textChangedListener())
+        fieldPriceSecond.addTextChangedListener(textChangedListener())
+        fieldSizeSecond.addTextChangedListener(textChangedListener())
 
-        button_submit.setOnClickListener {
+        buttonSubmit.setOnClickListener {
             hideKeyboard()
             calculate(true)
         }
 
-        field_size_second.setOnEditorActionListener(TextView.OnEditorActionListener { _, actionId, _ ->
+        fieldSizeSecond.setOnEditorActionListener(TextView.OnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEND) {
-                button_submit.performClick()
+                buttonSubmit.performClick()
                 return@OnEditorActionListener true
             }
 
@@ -79,7 +105,7 @@ class MainActivity : AppCompatActivity() {
         val configuration = RequestConfiguration.Builder().setTestDeviceIds(deviceId).build()
         MobileAds.setRequestConfiguration(configuration)
 
-        loadAdBanner(ll_banner, "ca-app-pub-6521704558504566/8188995605")
+        loadAdBanner(binding.llBanner, "ca-app-pub-6521704558504566/8188995605", null, true)
 
         loadInterstitialAd()
     }
@@ -90,7 +116,9 @@ class MainActivity : AppCompatActivity() {
 
         val adRequest = AdRequest.Builder().build()
 
-        InterstitialAd.load(this, adUnitId, adRequest, object : InterstitialAdLoadCallback() {
+        val mutableAdViewId = if (isDebug()) "ca-app-pub-3940256099942544/1033173712" else adUnitId
+
+        InterstitialAd.load(this, mutableAdViewId, adRequest, object : InterstitialAdLoadCallback() {
             override fun onAdFailedToLoad(adError: LoadAdError) {
                 appLog(logTag, "onAdFailedToLoad(): ${adError.message}")
                 interstitialAd = null
@@ -113,7 +141,7 @@ class MainActivity : AppCompatActivity() {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
 
             override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
-                card_result.visibility = View.GONE
+                binding.cardResult.visibility = View.GONE
             }
 
             override fun afterTextChanged(editable: Editable) {}
@@ -121,10 +149,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun calculate(showToast: Boolean) {
-        val priceFirst = getPrice(field_price_first)
-        val sizeFirst = getNumber(field_size_first)
-        val priceSecond = getPrice(field_price_second)
-        val sizeSecond = getNumber(field_size_second)
+        val priceFirst = getPrice(binding.fieldPriceFirst)
+        val sizeFirst = getNumber(binding.fieldSizeFirst)
+        val priceSecond = getPrice(binding.fieldPriceSecond)
+        val sizeSecond = getNumber(binding.fieldSizeSecond)
 
         if (priceFirst > 0 && sizeFirst > 0) {
             if (showToast)
@@ -134,20 +162,20 @@ class MainActivity : AppCompatActivity() {
 
             val resultFirst = getString(R.string.result_first, realFirst.formatPrice())
 
-            text_result_first.text = fromHtml(resultFirst)
+            binding.textResultFirst.text = fromHtml(resultFirst)
 
             if (priceSecond > 0 && sizeSecond > 0) {
                 val realSecond = priceSecond / sizeSecond
 
                 val resultSecond = getString(R.string.result_second, realSecond.formatPrice())
-                text_result_second.text = fromHtml(resultSecond)
+                binding.textResultSecond.text = fromHtml(resultSecond)
 
                 val firstBiggest = realFirst > realSecond
                 val larger = if (firstBiggest) realFirst else realSecond
                 val less = if (firstBiggest) realSecond else realFirst
 
                 if (larger == less) {
-                    text_result_percentage.setText(R.string.result_equals)
+                    binding.textResultPercentage.setText(R.string.result_equals)
                 } else {
                     val percentage = (larger - less) / larger
                     val formatted = formatPercent(percentage)
@@ -155,17 +183,17 @@ class MainActivity : AppCompatActivity() {
                     val word =
                         if (firstBiggest) getString(R.string.second) else getString(R.string.first)
                     val result = getString(R.string.result_percentage, word, formatted)
-                    text_result_percentage.text = fromHtml(result)
+                    binding.textResultPercentage.text = fromHtml(result)
                 }
 
-                text_result_second.visibility = View.VISIBLE
-                text_result_percentage.visibility = View.VISIBLE
+                binding.textResultSecond.visibility = View.VISIBLE
+                binding.textResultPercentage.visibility = View.VISIBLE
             } else {
-                text_result_second.visibility = View.GONE
-                text_result_percentage.visibility = View.GONE
+                binding.textResultSecond.visibility = View.GONE
+                binding.textResultPercentage.visibility = View.GONE
             }
 
-            card_result.visibility = View.VISIBLE
+            binding.cardResult.visibility = View.VISIBLE
 
             scrollBottom()
         } else {
@@ -176,7 +204,7 @@ class MainActivity : AppCompatActivity() {
                     message = R.string.error_empty_size
                 }
 
-                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -229,8 +257,8 @@ class MainActivity : AppCompatActivity() {
             )
     }
 
-    private fun scrollBottom() {
-        scroll_view.post { scroll_view.fullScroll(ScrollView.FOCUS_DOWN) }
+    private fun scrollBottom() = with(binding) {
+        scrollView.post { scrollView.fullScroll(ScrollView.FOCUS_DOWN) }
     }
 
 
@@ -257,17 +285,19 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        if (getValue(field_price_first).isEmpty())
-            field_price_first.setText(Hawk.get(PREF_PRICE_FIRST, ""))
+        binding.apply {
+            if (getValue(fieldPriceFirst).isEmpty())
+                fieldPriceFirst.setText(Hawk.get(PREF_PRICE_FIRST, ""))
 
-        if (getValue(field_size_first).isEmpty())
-            field_size_first.setText(Hawk.get(PREF_SIZE_FIRST, ""))
+            if (getValue(fieldSizeFirst).isEmpty())
+                fieldSizeFirst.setText(Hawk.get(PREF_SIZE_FIRST, ""))
 
-        if (getValue(field_price_second).isEmpty())
-            field_price_second.setText(Hawk.get(PREF_PRICE_SECOND, ""))
+            if (getValue(fieldPriceSecond).isEmpty())
+                fieldPriceSecond.setText(Hawk.get(PREF_PRICE_SECOND, ""))
 
-        if (getValue(field_size_second).isEmpty())
-            field_size_second.setText(Hawk.get(PREF_SIZE_SECOND, ""))
+            if (getValue(fieldSizeSecond).isEmpty())
+                fieldSizeSecond.setText(Hawk.get(PREF_SIZE_SECOND, ""))
+        }
 
         calculate(false)
     }
@@ -275,10 +305,12 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
 
-        Hawk.put(PREF_PRICE_FIRST, getValue(field_price_first))
-        Hawk.put(PREF_SIZE_FIRST, getValue(field_size_first))
-        Hawk.put(PREF_PRICE_SECOND, getValue(field_price_second))
-        Hawk.put(PREF_SIZE_SECOND, getValue(field_size_second))
+        binding.apply {
+            Hawk.put(PREF_PRICE_FIRST, getValue(fieldPriceFirst))
+            Hawk.put(PREF_SIZE_FIRST, getValue(fieldSizeFirst))
+            Hawk.put(PREF_PRICE_SECOND, getValue(fieldPriceSecond))
+            Hawk.put(PREF_SIZE_SECOND, getValue(fieldSizeSecond))
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -286,15 +318,18 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         alert(R.string.confirmation_message, R.string.confirmation) {
             positiveButton(R.string.confirm) {
-                field_price_first.setText("")
-                field_size_first.setText("")
-                field_price_second.setText("")
-                field_size_second.setText("")
+                binding.apply {
+                    fieldPriceFirst.setText("")
+                    fieldSizeFirst.setText("")
+                    fieldPriceSecond.setText("")
+                    fieldSizeSecond.setText("")
 
-                field_price_first.requestFocus()
+                    fieldPriceFirst.requestFocus()
+                }
             }
             negativeButton(R.string.cancel) {}
         }.show()

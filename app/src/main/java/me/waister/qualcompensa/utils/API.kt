@@ -17,7 +17,7 @@ const val API_V = "api_v"
 const val API_SUCCESS = "success"
 
 fun String?.getValidJSONObject(): JSONObject? {
-    if (this != null && this.isNotEmpty() && this != "null") {
+    if (!this.isNullOrEmpty() && this != "null") {
         try {
             return JSONObject(this)
         } catch (e: JSONException) {
@@ -31,7 +31,7 @@ fun JSONObject?.getBooleanVal(tag: String, default: Boolean = false): Boolean {
     if (this != null && has(tag)) {
         try {
             return getBoolean(tag)
-        } catch (e: JSONException) {
+        } catch (_: JSONException) {
         }
     }
     return default

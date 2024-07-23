@@ -10,7 +10,7 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.appopen.AppOpenAd
 import me.waister.qualcompensa.application.CustomApplication
-import java.util.*
+import java.util.Date
 
 class AppOpenManager(private var application: CustomApplication) : DefaultLifecycleObserver,
     Application.ActivityLifecycleCallbacks {

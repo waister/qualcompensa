@@ -20,8 +20,23 @@ import com.google.firebase.messaging.RemoteMessage
 import com.orhanobut.hawk.Hawk
 import me.waister.qualcompensa.BuildConfig
 import me.waister.qualcompensa.R
-import me.waister.qualcompensa.activity.SplashActivity
-import me.waister.qualcompensa.utils.*
+import me.waister.qualcompensa.activity.StartActivity
+import me.waister.qualcompensa.utils.API_ROUTE_IDENTIFY
+import me.waister.qualcompensa.utils.API_SUCCESS
+import me.waister.qualcompensa.utils.API_TOKEN
+import me.waister.qualcompensa.utils.NOTIFICATION_DEFAULT_ID
+import me.waister.qualcompensa.utils.PARAM_TYPE
+import me.waister.qualcompensa.utils.PREF_FCM_TOKEN
+import me.waister.qualcompensa.utils.PREF_FCM_TOKEN_SENT
+import me.waister.qualcompensa.utils.appLog
+import me.waister.qualcompensa.utils.getBooleanVal
+import me.waister.qualcompensa.utils.getCircleCroppedBitmap
+import me.waister.qualcompensa.utils.getThumbUrl
+import me.waister.qualcompensa.utils.getValidJSONObject
+import me.waister.qualcompensa.utils.isValidUrl
+import me.waister.qualcompensa.utils.printFuelLog
+import me.waister.qualcompensa.utils.storeAppLink
+import me.waister.qualcompensa.utils.stringToInt
 import java.io.IOException
 import java.net.ConnectException
 import java.net.URL
@@ -110,7 +125,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         val channelId = "${type}_channel"
 
-        var notifyIntent = Intent(applicationContext, SplashActivity::class.java)
+        var notifyIntent = Intent(applicationContext, StartActivity::class.java)
 
         if (version.isNotEmpty()) {
             val versionCode = version.stringToInt()

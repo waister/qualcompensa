@@ -9,6 +9,8 @@ import me.waister.qualcompensa.utils.*
 
 class CustomApplication : Application() {
 
+    var isCheckUpdatesNeeded: Boolean = true
+
     override fun onCreate() {
         super.onCreate()
 
