@@ -205,3 +205,11 @@ fun View?.isVisible(isVisible: Boolean) {
 fun View?.hide() {
     this.isVisible(false)
 }
+
+fun String?.isNumeric(): Boolean {
+    if (this == null) return false
+    val regex = "-?[0-9]+(\\.[0-9]+)?".toRegex()
+    return this.matches(regex)
+}
+
+fun String?.isNotNumeric(): Boolean = !this.isNumeric()

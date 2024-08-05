@@ -31,4 +31,7 @@
     <string name="exit_app">Exit APP</string>
     <string name="update_later">Update later</string>
     <string name="channel_updates">App Updates</string>
+    <string name="update_alert_title">Update</string>
+    <string name="update_alert_message">The update has just been downloaded, tap the button to start the installation.</string>
+    <string name="update_alert_button">Install</string>
 </resources>

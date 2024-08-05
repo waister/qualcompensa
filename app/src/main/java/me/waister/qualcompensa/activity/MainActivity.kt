@@ -19,17 +19,18 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.github.kittinunf.fuel.httpGet
 import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
-import com.google.android.gms.ads.interstitial.InterstitialAd
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.orhanobut.hawk.Hawk
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import me.waister.qualcompensa.R
 import me.waister.qualcompensa.databinding.ActivityMainBinding
 import me.waister.qualcompensa.utils.API_ROUTE_IDENTIFY
 import me.waister.qualcompensa.utils.API_SUCCESS
 import me.waister.qualcompensa.utils.API_TOKEN
+import me.waister.qualcompensa.utils.InAppUpdate
 import me.waister.qualcompensa.utils.MaskMoney
 import me.waister.qualcompensa.utils.PREF_FCM_TOKEN
 import me.waister.qualcompensa.utils.PREF_FCM_TOKEN_SENT
@@ -38,7 +39,6 @@ import me.waister.qualcompensa.utils.PREF_PRICE_FIRST
 import me.waister.qualcompensa.utils.PREF_PRICE_SECOND
 import me.waister.qualcompensa.utils.PREF_SIZE_FIRST
 import me.waister.qualcompensa.utils.PREF_SIZE_SECOND
-import me.waister.qualcompensa.utils.appLog
 import me.waister.qualcompensa.utils.getBooleanVal
 import me.waister.qualcompensa.utils.getValidJSONObject
 import me.waister.qualcompensa.utils.isDebug
@@ -51,8 +51,6 @@ import java.text.NumberFormat
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-
-    private var interstitialAd: InterstitialAd? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,6 +65,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         setupViews()
+
+        if (!isDebug())
+            InAppUpdate(this)
     }
 
     private fun setupViews() = with(binding) {
@@ -99,36 +100,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initAdMob() {
-        MobileAds.initialize(this) {}
+        CoroutineScope(Dispatchers.IO).launch {
+            MobileAds.initialize(this@MainActivity) {}
+            runOnUiThread {
+                val deviceId = listOf(AdRequest.DEVICE_ID_EMULATOR)
+                val configuration = RequestConfiguration.Builder().setTestDeviceIds(deviceId).build()
+                MobileAds.setRequestConfiguration(configuration)
 
-        val deviceId = listOf(AdRequest.DEVICE_ID_EMULATOR)
-        val configuration = RequestConfiguration.Builder().setTestDeviceIds(deviceId).build()
-        MobileAds.setRequestConfiguration(configuration)
-
-        loadAdBanner(binding.llBanner, "ca-app-pub-6521704558504566/8188995605", null, true)
-
-        loadInterstitialAd()
-    }
-
-    private fun loadInterstitialAd() {
-        val logTag = "InterstitialAd"
-        val adUnitId = "ca-app-pub-6521704558504566/4676577263"
-
-        val adRequest = AdRequest.Builder().build()
-
-        val mutableAdViewId = if (isDebug()) "ca-app-pub-3940256099942544/1033173712" else adUnitId
-
-        InterstitialAd.load(this, mutableAdViewId, adRequest, object : InterstitialAdLoadCallback() {
-            override fun onAdFailedToLoad(adError: LoadAdError) {
-                appLog(logTag, "onAdFailedToLoad(): ${adError.message}")
-                interstitialAd = null
+                loadAdBanner(
+                    adViewContainer = binding.llBanner,
+                    adUnitId = "ca-app-pub-6521704558504566/8188995605",
+                    adSize = null,
+                    collapsible = false,
+                )
             }
-
-            override fun onAdLoaded(ad: InterstitialAd) {
-                appLog(logTag, "Ad was loaded")
-                interstitialAd = ad
-            }
-        })
+        }
     }
 
     private fun alertFirstAccess() {
@@ -155,9 +141,6 @@ class MainActivity : AppCompatActivity() {
         val sizeSecond = getNumber(binding.fieldSizeSecond)
 
         if (priceFirst > 0 && sizeFirst > 0) {
-            if (showToast)
-                interstitialAd?.show(this)
-
             val realFirst = priceFirst / sizeFirst
 
             val resultFirst = getString(R.string.result_first, realFirst.formatPrice())
