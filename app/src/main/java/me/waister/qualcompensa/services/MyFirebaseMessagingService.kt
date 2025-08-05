@@ -7,13 +7,13 @@ import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
-import android.net.Uri
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import com.github.kittinunf.fuel.httpGet
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -141,7 +141,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         if (link.isValidUrl()) {
 
-            notifyIntent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
+            notifyIntent = Intent(Intent.ACTION_VIEW, link.toUri())
 
         } else {
 

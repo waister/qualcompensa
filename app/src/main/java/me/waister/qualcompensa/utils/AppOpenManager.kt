@@ -22,7 +22,6 @@ class AppOpenManager(private var application: CustomApplication) : DefaultLifecy
 
     companion object {
         private const val LOG_TAG = "AppOpenManager"
-
         private const val AD_UNIT_ID = "ca-app-pub-6521704558504566/6559082028"
     }
 
@@ -38,8 +37,6 @@ class AppOpenManager(private var application: CustomApplication) : DefaultLifecy
     }
 
     private fun showAdIfAvailable() {
-        appLog(LOG_TAG, "Ad unit id: $AD_UNIT_ID")
-
         if (!isShowingAd && isAdAvailable()) {
             appLog(LOG_TAG, "Will show ad")
 
@@ -58,9 +55,11 @@ class AppOpenManager(private var application: CustomApplication) : DefaultLifecy
             return
         }
 
+        val adUnitId = if (isDebug()) "ca-app-pub-3940256099942544/3419835294" else AD_UNIT_ID
+
         loadCallback = object : AppOpenAd.AppOpenAdLoadCallback() {
             override fun onAdLoaded(ad: AppOpenAd) {
-                appLog(LOG_TAG, "Ad was loaded")
+                appLog(LOG_TAG, "AppOpenAd was loaded")
 
                 appOpenAd = ad
                 loadTime = Date().time
@@ -78,10 +77,9 @@ class AppOpenManager(private var application: CustomApplication) : DefaultLifecy
             }
         }
 
-        val request: AdRequest = AdRequest.Builder().build()
-        val orientation = AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT
+        appLog(LOG_TAG, "Ad unit id: $adUnitId")
 
-        AppOpenAd.load(application, AD_UNIT_ID, request, orientation, loadCallback)
+        AppOpenAd.load(application, adUnitId, AdRequest.Builder().build(), loadCallback)
     }
 
     private fun isAdAvailable(): Boolean {

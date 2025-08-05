@@ -4,14 +4,14 @@ apply plugin: 'com.google.firebase.crashlytics'
 
 android {
     namespace "me.waister.qualcompensa"
-    compileSdk 34
+    compileSdk 36
 
     defaultConfig {
         applicationId "me.waister.qualcompensa"
-        minSdkVersion 21
-        targetSdkVersion 34
-        versionCode 10
-        versionName "1.1.5"
+        minSdkVersion 23
+        targetSdkVersion 36
+        versionCode 11
+        versionName "1.2.0"
         multiDexEnabled true
     }
     buildTypes {
@@ -20,31 +20,41 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8
+    }
     viewBinding {
         enabled = true
+    }
+    buildFeatures {
+        buildConfig = true
     }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     testImplementation 'junit:junit:4.13.2'
-    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'androidx.appcompat:appcompat:1.7.1'
     implementation 'com.google.android.material:material:1.12.0'
-    implementation 'com.google.android.gms:play-services-ads:23.2.0'
+    implementation 'com.google.android.gms:play-services-ads:24.5.0'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.google.firebase:firebase-core:21.1.1'
-    implementation 'com.google.firebase:firebase-messaging:24.0.0'
-    implementation 'com.google.firebase:firebase-crashlytics:19.0.3'
-    implementation 'com.google.firebase:firebase-analytics:21.3.0'
-    implementation "androidx.core:core-ktx:1.13.1"
+    implementation 'com.google.firebase:firebase-messaging:25.0.0'
+    implementation 'com.google.firebase:firebase-crashlytics:20.0.0'
+    implementation 'com.google.firebase:firebase-analytics:23.0.0'
+    implementation "androidx.core:core-ktx:1.16.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.orhanobut:hawk:2.0.1'
-    implementation 'org.jetbrains.anko:anko-commons:0.10.1'
     implementation 'com.github.kittinunf.fuel:fuel-android:2.3.1'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.1'
-    implementation 'androidx.lifecycle:lifecycle-common-java8:2.4.1'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.9.2'
+    implementation 'androidx.lifecycle:lifecycle-common-java8:2.9.2'
     implementation 'com.google.android.play:app-update-ktx:2.1.0'
+    implementation 'androidx.core:core-splashscreen:1.0.1'
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -24,9 +24,8 @@ class CustomApplication : Application() {
 
         Hawk.init(this).build()
 
-        Thread {
-            MobileAds.initialize(this) {}
-        }.start()
+        MobileAds.initialize(this) {}
+
         AppOpenManager(this)
 
         FuelManager.instance.basePath = "${APP_HOST}api/qualcompensa"

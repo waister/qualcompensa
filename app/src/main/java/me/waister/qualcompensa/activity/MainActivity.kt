@@ -2,6 +2,7 @@ package me.waister.qualcompensa.activity
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.Html
@@ -39,13 +40,15 @@ import me.waister.qualcompensa.utils.PREF_PRICE_FIRST
 import me.waister.qualcompensa.utils.PREF_PRICE_SECOND
 import me.waister.qualcompensa.utils.PREF_SIZE_FIRST
 import me.waister.qualcompensa.utils.PREF_SIZE_SECOND
+import me.waister.qualcompensa.utils.alert
 import me.waister.qualcompensa.utils.getBooleanVal
 import me.waister.qualcompensa.utils.getValidJSONObject
 import me.waister.qualcompensa.utils.isDebug
 import me.waister.qualcompensa.utils.loadAdBanner
+import me.waister.qualcompensa.utils.negativeButton
+import me.waister.qualcompensa.utils.positiveButton
 import me.waister.qualcompensa.utils.printFuelLog
-import org.jetbrains.anko.alert
-import org.jetbrains.anko.intentFor
+import me.waister.qualcompensa.utils.setupCommonInsets
 import java.text.NumberFormat
 
 class MainActivity : AppCompatActivity() {
@@ -57,6 +60,8 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        setSupportActionBar(binding.toolbar)
 
         val actionBar = supportActionBar
 
@@ -71,6 +76,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupViews() = with(binding) {
+        setupCommonInsets(appBarLayout, root)
+
         initAdMob()
 
         fieldPriceFirst.addTextChangedListener(MaskMoney(fieldPriceFirst))
@@ -119,7 +126,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun alertFirstAccess() {
         if (Hawk.get(PREF_FIRST_ACCESS, true))
-            startActivity(intentFor<HowWorksActivity>())
+            startActivity(Intent(this, HowWorksActivity::class.java))
     }
 
     private fun textChangedListener(): TextWatcher {

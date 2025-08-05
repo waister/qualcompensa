@@ -1,5 +1,6 @@
 package me.waister.qualcompensa.utils
 
+import android.app.AlertDialog
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -12,6 +13,11 @@ import android.util.Log
 import android.view.View
 import android.webkit.URLUtil
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import androidx.core.graphics.createBitmap
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import com.github.kittinunf.fuel.core.FuelError
 import com.github.kittinunf.fuel.core.Request
 import com.github.kittinunf.fuel.core.Response
@@ -22,6 +28,7 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.LoadAdError
+import com.google.android.material.appbar.AppBarLayout
 import me.waister.qualcompensa.BuildConfig
 import java.util.UUID
 
@@ -34,7 +41,8 @@ fun String?.stringToInt(): Int {
             if (number.isNotEmpty())
                 return number.toInt()
         }
-    } catch (_: Exception) {
+    } catch (e: Exception) {
+        if (isDebug()) e.printStackTrace()
     }
     return 0
 }
@@ -47,7 +55,7 @@ fun Context?.getThumbUrl(
     image: String?,
     width: Int = 220,
     height: Int = 0,
-    quality: Int = 85
+    quality: Int = 85,
 ): String {
     if (this != null && image != null && !image.contains("http") && image.contains("/uploads/")) {
         return APP_HOST + "thumb?src=$image&w=$width&h=$height&q=$quality"
@@ -78,7 +86,7 @@ fun Bitmap?.getCircleCroppedBitmap(): Bitmap? {
 
     if (bitmap != null) {
         try {
-            output = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
+            output = createBitmap(bitmap.width, bitmap.height)
             val canvas = Canvas(output)
 
             val color = -0xbdbdbe
@@ -123,7 +131,12 @@ fun printFuelLog(request: Request, response: Response, result: Result<String, Fu
     }
 }
 
-fun Context?.loadAdBanner(adViewContainer: LinearLayout?, adUnitId: String, adSize: AdSize? = null, collapsible: Boolean = false) {
+fun Context?.loadAdBanner(
+    adViewContainer: LinearLayout?,
+    adUnitId: String,
+    adSize: AdSize? = null,
+    collapsible: Boolean = false,
+) {
     val logTag = "LOAD_ADMOB_BANNER"
 
     if (this == null || adUnitId.isEmpty() || adViewContainer == null) {
@@ -213,3 +226,59 @@ fun String?.isNumeric(): Boolean {
 }
 
 fun String?.isNotNumeric(): Boolean = !this.isNumeric()
+
+fun Context.alert(
+    message: Int,
+    title: Int,
+    init: AlertDialog.Builder.() -> Unit,
+) = alert(
+    message = getString(message),
+    title = getString(title),
+    init = init
+)
+
+fun Context.alert(
+    message: String,
+    title: String = "",
+    init: AlertDialog.Builder.() -> Unit,
+): AlertDialog {
+    val builder = AlertDialog.Builder(this)
+    builder.setMessage(message)
+    if (title.isNotEmpty()) {
+        builder.setTitle(title)
+    }
+    builder.init()
+    return builder.create()
+}
+
+fun AlertDialog.Builder.positiveButton(textRes: Int, handler: (() -> Unit)? = null) {
+    setPositiveButton(textRes) { _, _ -> handler?.invoke() }
+}
+
+fun AlertDialog.Builder.negativeButton(textRes: Int, handler: (() -> Unit)? = null) {
+    setNegativeButton(textRes) { _, _ -> handler?.invoke() }
+}
+
+fun AlertDialog.Builder.onCancelled(handler: () -> Unit) {
+    setOnCancelListener { handler() }
+}
+
+fun setupCommonInsets(appBarLayout: AppBarLayout, contentRoot: RelativeLayout) {
+    ViewCompat.setOnApplyWindowInsetsListener(appBarLayout) { view, insets ->
+        val bars =
+            insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
+        view.apply {
+            updatePadding(left = bars.left, top = bars.top, right = bars.right)
+        }
+        insets
+    }
+
+    ViewCompat.setOnApplyWindowInsetsListener(contentRoot) { view, insets ->
+        val bars =
+            insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
+        view.apply {
+            updatePadding(left = bars.left, right = bars.right, bottom = bars.bottom)
+        }
+        insets
+    }
+}

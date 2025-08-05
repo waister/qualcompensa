@@ -27,7 +27,7 @@
         <activity
             android:name=".activity.StartActivity"
             android:exported="true"
-            android:theme="@style/SplashTheme"
+            android:theme="@style/StartActivityTheme"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -37,13 +37,15 @@
         </activity>
         <activity
             android:name=".activity.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activity.HowWorksActivity"
             android:label="@string/alert_title"
             android:screenOrientation="portrait"
-            android:theme="@style/HowWorksTheme"
-            android:windowSoftInputMode="stateHidden" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden"
+            tools:ignore="DiscouragedApi" />
 
         <service
             android:name=".services.MyFirebaseMessagingService"

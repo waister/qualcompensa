@@ -28,7 +28,8 @@ class MaskMoney(private val editText: EditText) : TextWatcher {
 
             editText.setText(value)
             editText.setSelection(value.length)
-        } catch (ignored: NumberFormatException) {
+        } catch (e: NumberFormatException) {
+            if (isDebug()) e.printStackTrace()
         }
 
     }
